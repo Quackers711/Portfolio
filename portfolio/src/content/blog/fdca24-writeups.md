@@ -261,7 +261,9 @@ For this challenge we are continuing where we left off in part 1.
 
 After a lot more enumeration, we can eventually find the ``.ssh`` directory with a bunch of SSH keys:<br>
 ``echo .ssh/*``
-> .ssh/authorized_keys .ssh/fenrir.echo.priv .ssh/fenrir.id.priv .ssh/fenrir.ls.priv .ssh/fenrir.pwd.priv .ssh/fenrir.ssh.priv
+```
+.ssh/authorized_keys .ssh/fenrir.echo.priv .ssh/fenrir.id.priv .ssh/fenrir.ls.priv .ssh/fenrir.pwd.priv .ssh/fenrir.ssh.priv
+```
 
 This is where it gets interesting. We are given an SSH key tied to a specific command of a user.
 The only commands/keys we will need for the solution are ``ls`` and ``ssh``.
@@ -282,7 +284,9 @@ This command will print out the line contents of the files if it is not a valid 
 ``ssh fenrir@xn--jttenettet-d6a.dk -p 2222 -i ssh.priv ".ssh/vaultkey.encrypted"``
 
 This returns a lot of lines that look something like this:
-> .ssh/vaultkey.encrypted line 1: no argument after keyword "fuws2ljnijcuoskoebhvarkoknjuqicqkjevmqkuiuqewrkzfuws2ljnbjrdgqtmmjxe46tbimyx"
+```
+.ssh/vaultkey.encrypted line 1: no argument after keyword "fuws2ljnijcuoskoebhvarkoknjuqicqkjevmqkuiuqewrkzfuws2ljnbjrdgqtmmjxe46tbimyx"
+```
 
 After cleaning up this output we get the following output:
 ```
