@@ -1,7 +1,7 @@
 ---
 title: 'Wizer CTF - Accidentally Bug Hunting a CTF'
 description: 'How I acidentally discovered a bug in the infrastructure for Wizer CTF '
-pubDate: 'July 2 2024'
+pubDate: 'Feb 7 2024'
 heroImage: '/blog-placeholder-2.jpg'
 ---
 

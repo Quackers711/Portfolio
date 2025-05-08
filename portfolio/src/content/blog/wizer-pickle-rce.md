@@ -1,7 +1,7 @@
 ---
 title: 'Wizer CTF - Pickle Deserialization RCE'
 description: 'Pickle Deserilization RCE CTF writeup from Wizer CTF.'
-pubDate: 'July 2 2024'
+pubDate: 'Feb 7 2024'
 heroImage: '/PythonPickleRCE.jpg'
 ---
 
