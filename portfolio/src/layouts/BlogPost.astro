@@ -74,13 +74,9 @@ const { title, description, pubDate, updatedDate, heroImage, tags, locked} = Ast
 							}
 						</div>
 						<h1>{title}</h1>
-						{locked ? (
+						{locked && (
 							<div class="locked-message">
 								This blog post is locked and requires special access to view its content.
-							</div>
-						) : (
-							<div class="unlocked-message">
-								This blog post is publicly accessible. Enjoy reading!
 							</div>
 						)}
 						<style>
