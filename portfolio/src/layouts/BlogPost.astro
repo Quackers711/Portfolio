@@ -102,11 +102,13 @@ const { title, description, pubDate, updatedDate, heroImage, tags, locked} = Ast
 								border: 1px solid rgb(var(--primary));
 							}
 						</style>
-						<div class="tags">
-							{tags.map((tag) => (
-								<a href={`/tags/${tag}`} class="tag">#{tag}</a>
-							))}
-						</div>
+						{tags && (
+							<div class="tags">
+								{tags.map((tag) => (
+									<a href={`/tags/${tag}`} class="tag">#{tag}</a>
+								))}
+							</div>
+						)}
 						<style>
 							.tags {
 								display: flex;

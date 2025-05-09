@@ -8,9 +8,19 @@ import UnlockForm from '../../components/UnlockForm.jsx';
 import { render } from 'astro:content';
 
 const { slug } = Astro.params;
-//const post = await getEntry('blog', slug);
 const cookies = parse(Astro.request.headers.get('cookie') || '');
-const unlocked = cookies[`unlocked_${slug}`] === 'true';
+
+const passwords = JSON.parse(import.meta.env.POST_PASSWORDS || '{}');
+const expected = passwords[slug];
+
+const hashedPassword = await crypto.subtle.digest(
+          'SHA-256',
+          new TextEncoder().encode(expected)
+        );
+        const hashArray = Array.from(new Uint8Array(hashedPassword));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+const unlocked = cookies[`unlocked_${slug}`] === hashHex;
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -21,7 +31,11 @@ export async function getStaticPaths() {
 }
 type Props = CollectionEntry<'blog'>;
 
-const post = Astro.props;
+// Dynamically fetch the post data at runtime
+const post = await getEntry('blog', slug);
+if (!post) {
+  return Astro.redirect('/404');
+}
 const { Content } = await render(post);
 ---
 

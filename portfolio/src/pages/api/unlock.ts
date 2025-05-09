@@ -10,15 +10,23 @@ export const POST: APIRoute = async ({ request }) => {
       const body = await request.json(); // this throws if no body or bad JSON
       const { slug, password } = body;
   
-      const passwords = JSON.parse('{"ddc25-national-writeups": "password", "another-post": "letmein"}');
+      const passwords = JSON.parse(import.meta.env.POST_PASSWORDS || '{}');
+      console.log(passwords);
       const expected = passwords[slug];
   
       if (password && password === expected) {
         
+        const hashedPassword = await crypto.subtle.digest(
+          'SHA-256',
+          new TextEncoder().encode(password)
+        );
+        const hashArray = Array.from(new Uint8Array(hashedPassword));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
         return new Response(JSON.stringify({ success: true }), {
           status: 200,
           headers: {
-            'Set-Cookie': `unlocked_${slug}=true; Path=/; HttpOnly; SameSite=Strict`,
+            'Set-Cookie': `unlocked_${slug}=${hashHex}; Path=/; HttpOnly; SameSite=Strict`,
           },
         });
       }
