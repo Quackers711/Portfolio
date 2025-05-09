@@ -1,7 +1,16 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
+export const prerender = false;
+
+import { type CollectionEntry, getCollection, getEntry } from 'astro:content';
+import { parse } from 'cookie';
 import BlogPost from '../../layouts/BlogPost.astro';
+import UnlockForm from '../../components/UnlockForm.jsx';
 import { render } from 'astro:content';
+
+const { slug } = Astro.params;
+//const post = await getEntry('blog', slug);
+const cookies = parse(Astro.request.headers.get('cookie') || '');
+const unlocked = cookies[`unlocked_${slug}`] === 'true';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -16,6 +25,12 @@ const post = Astro.props;
 const { Content } = await render(post);
 ---
 
-<BlogPost {...post.data}>
-	<Content />
-</BlogPost>
+{post.data.locked && !unlocked ? (
+	<BlogPost {...post.data}>
+	  <UnlockForm slug={slug} client:load />
+	</BlogPost>
+  ) : (
+	<BlogPost {...post.data}>
+	  <Content />
+	</BlogPost>
+  )}

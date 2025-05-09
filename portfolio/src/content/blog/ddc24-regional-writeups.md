@@ -1,8 +1,9 @@
 ---
-title: 'DDC 24 - Regional Writeups'
+title: 'DDC24 - Regional Writeups'
 description: 'Writeups of all challenges I solved during regionals of DDC24'
 pubDate: 'Apr 14 2024'
 heroImage: '/blog-placeholder-3.jpg'
+tags: ['CTF', 'DDC', 'Web', 'Forensics', 'Rev', 'B2R', 'Misc', 'Crypto', 'Unintended']
 ---
 
 The regional championship of DDC was held on February 13, 2024, and I ended up placing number 1 in my region and number 10 overall.

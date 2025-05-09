@@ -3,6 +3,7 @@ title: 'Wizer CTF - Accidentally Bug Hunting a CTF'
 description: 'How I acidentally discovered a bug in the infrastructure for Wizer CTF '
 pubDate: 'Feb 7 2024'
 heroImage: '/blog-placeholder-2.jpg'
+tags: ['CTF', 'Bug', 'Web', 'Unintended']
 ---
 
 During the Wizer 6-hour Blitz CTF, I discovered an interesting error message behaviour after trying to submit the flag for challenge 4.

@@ -3,6 +3,7 @@ title: 'Wizer CTF - Pickle Deserialization RCE'
 description: 'Pickle Deserilization RCE CTF writeup from Wizer CTF.'
 pubDate: 'Feb 7 2024'
 heroImage: '/PythonPickleRCE.jpg'
+tags: ['CTF', 'Web', 'RCE', 'Python']
 ---
 
 Wizer recently hosted a 6-hour Blitz CTF consisting of 6 challenges to be solved in 6 hours. These challenges varied in difficulty, as measured by hot peppers ranging from 1-5. This challenge, titled "Profile page" scored 4/5 peppers.

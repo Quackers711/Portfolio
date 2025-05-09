@@ -7,7 +7,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage} = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags, locked} = Astro.props;
 ---
 
 <html lang="en">
@@ -74,6 +74,64 @@ const { title, description, pubDate, updatedDate, heroImage} = Astro.props;
 							}
 						</div>
 						<h1>{title}</h1>
+						{locked ? (
+							<div class="locked-message">
+								This blog post is locked and requires special access to view its content.
+							</div>
+						) : (
+							<div class="unlocked-message">
+								This blog post is publicly accessible. Enjoy reading!
+							</div>
+						)}
+						<style>
+							.locked-message, .unlocked-message {
+								margin: 1em 0;
+								padding: 1em;
+								border-radius: 8px;
+								text-align: center;
+								font-style: italic;
+							}
+							.locked-message {
+								background-color: rgb(var(--gray-light));
+								color: rgb(var(--gray-dark));
+								border: 1px solid rgb(var(--gray));
+							}
+							.unlocked-message {
+								background-color: rgb(var(--primary-light));
+								color: rgb(var(--primary-dark));
+								border: 1px solid rgb(var(--primary));
+							}
+						</style>
+						<div class="tags">
+							{tags.map((tag) => (
+								<a href={`/tags/${tag}`} class="tag">#{tag}</a>
+							))}
+						</div>
+						<style>
+							.tags {
+								display: flex;
+								flex-wrap: wrap;
+								justify-content: center;
+								gap: 0.5em;
+								margin-top: 1em;
+							}
+							.tag {
+								display: inline-block;
+								padding: 0.3em 0.6em;
+								background-color: rgb(var(--gray-light));
+								color: rgb(var(--primary));
+								border: 1px solid rgb(var(--primary));
+								border-radius: 12px;
+								text-decoration: none;
+								font-size: 0.9em;
+								transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+							}
+							.tag:hover {
+								background-color: rgb(var(--gray));
+								color: rgb(var(--gray-dark));
+								border-color: rgb(var(--gray-dark));
+							}
+						</style>
 						<hr />
 					</div>
 					<slot />

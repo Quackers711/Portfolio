@@ -1,6 +1,7 @@
 import { glob } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
 
+
 const blog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/blog/` directory.
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
@@ -12,7 +13,7 @@ const blog = defineCollection({
 		pubDate: z.coerce.date(),
 		updatedDate: z.coerce.date().optional(),
 		heroImage: z.string().optional(),
-		locked: z.boolean().optional(),
+		locked: z.boolean().optional().transform((locked) => (locked ? locked : false)),
 		tags: z
 			.array(z.string())
 			.optional()

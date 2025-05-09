@@ -3,6 +3,7 @@ title: 'DDC24 - National Writeups'
 description: 'Writeups of all challenges I solved during nationals of DDC24'
 pubDate: 'May 5 2024'
 heroImage: '/blog-placeholder-4.jpg'
+tags: ['CTF', 'DDC', 'Web', 'Forensics', 'B2R', 'Misc', 'Crypto', 'Rev']
 ---
 
 The national championship of DDC was held on May 4, 2024, and I ended up placing number 8 in the junior category.

@@ -1,8 +1,10 @@
 ---
-title: 'DDC 25 - National Writeups'
+title: 'DDC25 - National Writeups'
 description: 'Writeups of all challenges I solved during nationals of DDC25'
 pubDate: 'May 8 2025'
 heroImage: '/blog-placeholder-4.jpg'
+tags: ['Web', 'DDC', 'B2R']
+locked: true
 ---
 
 The national championship of DDC was held on May 3, 2024, and I ended up placing number 4 in the senior category.

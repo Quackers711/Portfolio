@@ -1,8 +1,9 @@
 ---
-title: 'DDC - im-blogging-you unintended'
+title: 'DDC24 - im-blogging-you unintended'
 description: 'CTF writeup detailing the unintended solution for im-blogging-you during DDC 2024.'
 pubDate: 'Mar 18 2024'
 heroImage: '/blog-placeholder-3.jpg'
+tags: ['CTF', 'DDC', 'Web', 'Unintended']
 ---
 
 ## Intro

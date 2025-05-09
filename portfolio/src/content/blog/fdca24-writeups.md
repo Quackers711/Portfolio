@@ -3,6 +3,7 @@ title: 'FDCA24 - Writeups'
 description: 'Writeups for the most interesting challenges I solved.'
 pubDate: 'Dec 15 2024'
 heroImage: '/blog-placeholder-5.jpg'
+tags: ['CTF', 'FDCA', 'Web', 'B2R', 'Misc', 'Crypto']
 ---
 
 This CTF ran as a Christmas calendar with a new challenge releasing every day.
