@@ -54,11 +54,93 @@ And we get our flag:
 ### Labyrinth
 ###### 100pts - 24 solves
 > Det ligner ikke at der er anden vej til flaget end at finde igennem labyrinten. Hvis vi farer vild er der ikke andet at gøre end at prøve igen - det hjælper ikke at blive angry
+TODO WRITE PROPERLY
+
+Decompiled source:
+```c
+puts("Welcome to the Labyrinth!");
+puts("Make your way through the labyrinth by choosing one of the three paths (1, 2, or 3) at each choice.");
+for ( i = 0; i <= 15; ++i )
+{
+printf("Choice %d - Enter a number between 1 and 3: ", i + 1);
+__isoc99_scanf("%d", &v6);
+if ( v6 > 0 && v6 <= 3 )
+{
+    v7[i] = v6;
+    v4[i] = v6 + 48;
+}
+else
+{
+    puts("Invalid choice! Please choose 1, 2, or 3.");
+    --i;
+}
+}
+v4[16] = 0;
+compute_sha256(v7, 64LL, s1);
+if ( !memcmp(s1, &correct_hash, 0x20uLL) )
+{
+puts("Congratulations! You've escaped the labyrinth.");
+printf("DDC{%s}\n", v4);
+}
+else
+{
+puts("You ended up at a blind path! Try again...");
+}
+return 0;
+```
+
+Compares our path with hash ``ed7edd1fe012c1d2d8e55dcacc9f568096ea31aa2cf91c5bc1d72e3b086f062d``.
+
+Solve script to find a path that matches hash:
+```py
+import hashlib
+import itertools
+
+# Possible choices
+choices = [1, 2, 3]
+
+hash = bytes.fromhex("ed7edd1fe012c1d2d8e55dcacc9f568096ea31aa2cf91c5bc1d72e3b086f062d")
+
+def try_all_combinations():
+    for combo in itertools.product(choices, repeat=16):
+        v7_bytes = b''.join(int(x).to_bytes(4, byteorder='little') for x in combo)
+        assert len(v7_bytes) == 64
+
+        v4_string = ''.join(str(x) for x in combo)
+
+        # Compute SHA256 hash
+        sha = hashlib.sha256()
+        sha.update(v7_bytes)
+        digest = sha.digest()
+
+        # Compare hash
+        if digest == hash:
+            print("Match found!")
+            print(f"Path: {v4_string}")
+            print(f"Hash: {digest.hex()}")
+            break
+    else:
+        print("No match found.")
+
+if __name__ == "__main__":
+    print("Bruting path...")
+    try_all_combinations()
+```
+
+Which gives the path: ``1132132313321331``. Inputting this we get the following:
+```
+Congratulations! You've escaped the labyrinth.
+DDC{1132132313321331}
+```
+
+And we have our flag: ``DDC{1132132313321331}``
+
 
 ## Forensics
 ### Unexpected Invoice
 ###### 100pts - 22 solves
 > Vi har fået en invoice fra en eller anden som siger han har lavet en challenge til DDC og skal have nogle penge? Det virker lidt mærkeligt det hele... Kan du tage et kig?
+TODO WRITE PROPERLY
 
 JS in the end of PDF. ``tail Invoice\ 42.pdf.js -n 100``.
 ```js
@@ -128,7 +210,14 @@ And we get our flag in base64:
 > I en yderst vigtig e-mail korrespondance diskuterer JD Vance og Donald Trump forretningsidéer i topklasse, store hemmeligheder og absolut ikke mistænkelige aftaler. Dog har de, enten på grund af manglende cybersikkerhedsprincipper eller en lidt for afslappet tilgang til dem, efterladt et flag i en af deres e-mails.
 > 
 > Uheldigt for dem (men heldigt for vores Nationals-deltagere) blev en kopi af denne udveksling opsnappet via en ikke-offentliggjort XKEYSCORE-node. En tidligere NSA-medarbejder, der netop var blevet fyret af Elon Musks DOGE-projekt, har lækket et disk-image fra denne XKEYSCORE-node og han så bestemt ikke tilfreds ud.
+TODO WRITE PROPERLY
 
+Opening the disk image in Autopsy we can see a deleted file named ``bigsteakinterception.pcap``.
+
+In this network capture we have some SMTP traffic. By going to TCP stream 4 we can see that an image is sent. By extracting this we get:
+![Flag for forensics](/src/assets/DDC25National/forensicsFlag.png)
+
+And we have our flag: ``DDC{HUGE_VERY_BIG_COIN}``
 
 
 ## Cryptography
@@ -207,7 +296,7 @@ Give me the modified ciphertext, quick!
 ```
 
 Solve script:
-```
+```py
 # Original ciphertext in hex (you'll need to get this from the program's output)
 original_ciphertext_hex = "f8687eeeb5f17c5d9326891f360f5cf166c8a468b9b9b0f6407848b18d5bf01603c3828822efc631708f40aebbc2554f19d2a8db861c81e8eecdfd7f35e3032f"
 
