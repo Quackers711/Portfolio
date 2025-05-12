@@ -8,7 +8,7 @@ locked: true
 ---
 
 The national championship of DDC was held on May 3, 2024, and I ended up placing number 4 in the senior category.
-![National Scoreboard](/src/assets/DDC25National/Scoreboard.png) 
+![National Scoreboard](/DDC25National/Scoreboard.png) 
 
 # Challenges
 
@@ -18,7 +18,7 @@ The national championship of DDC was held on May 3, 2024, and I ended up placing
 > Kan du slå mit "simple" spil? 👾 Hver gang du gætter forkert, vil der blive genereret et nyt nummer. 🙀
 
 Upon visiting the website we are asked to guess a number:
-![1337Guessr home screen](/src/assets/DDC25National/guess.png)
+![1337Guessr home screen](/DDC25National/guess.png)
 
 By checking the source of the website we can see that there is some obfuscated Javascript. Deobfuscating this using <https://obf-io.deobfuscate.io/> gives us:
 ```js
@@ -46,7 +46,7 @@ document.getElementById('v').addEventListener('click', README);
 Here we can see that a random number is generated and compared to our input. Knowing this, we can go to the debugger tab of devtools and set a watch expression for ``_0x69d1d3d37``.
 
 We can immediatly see that it has the value we need to guess. In this case it was ``29584``. Simply inputting this gives us the flag:
-![1337Guesser flag](/src/assets/DDC25National/guessFlag.png)
+![1337Guesser flag](/DDC25National/guessFlag.png)
 
 And we get our flag:
 ``DDC{1337_d3crypt0r_g0d}``
@@ -215,7 +215,7 @@ TODO WRITE PROPERLY
 Opening the disk image in Autopsy we can see a deleted file named ``bigsteakinterception.pcap``.
 
 In this network capture we have some SMTP traffic. By going to TCP stream 4 we can see that an image is sent. By extracting this we get:
-![Flag for forensics](/src/assets/DDC25National/forensicsFlag.png)
+![Flag for forensics](/DDC25National/forensicsFlag.png)
 
 And we have our flag: ``DDC{HUGE_VERY_BIG_COIN}``
 
@@ -337,7 +337,7 @@ Send the result to server and we get our flag:
 > Tjek her, om dine strenge er palindromer!
 
 When opening the webste we are greeted with the following screen:
-![Templatetrap homepage](/src/assets/DDC25National/templatetrap.png)
+![Templatetrap homepage](/DDC25National/templatetrap.png)
 
 And we are also given the source:
 ```js
@@ -396,14 +396,14 @@ Which gives:
 Inputting this on the website gets us the flag:
 ``DDC{templating-gone-wrong} ``
 
-![Flag screen for template trap](/src/assets/DDC25National/templateFlag.png)
+![Flag screen for template trap](/DDC25National/templateFlag.png)
 
 ### Photo Album
 ###### 100pts - 25 solves
 > Upload dine billeder!
 
 Upon visiting the page we can see that we are able to upload a ``TAR`` file:
-![Photo Album homepage](/src/assets/DDC25National/photoAlbum.png)
+![Photo Album homepage](/DDC25National/photoAlbum.png)
 
 By looking into the source we can find the interesting upload function:
 ```py
@@ -455,7 +455,7 @@ with tarfile.open("exploit.tar", "w") as tar:
 
 After uploading it we can then navigate to <http://photo-album.hkn/static/albums/exploit.jpg> to get the flag. Usually a browser will fail to render the image as it only contains the flag.
 Instead we can just send a request in a proxy like Burpsuite and we can see the flag in the response:
-![Flag for Photo Album](/src/assets/DDC25National/albumFlag.png)
+![Flag for Photo Album](/DDC25National/albumFlag.png)
 
 ``DDC{f4k3_im4g3_r34l_fl4g}``
 
@@ -574,14 +574,14 @@ if __name__ == "__main__":
 
 This allows us to sign our forged token using the public key. Therefore we can login as admin:
 
-![Admin page of bug tracker](/src/assets/DDC25National/bugAdmin.png)
+![Admin page of bug tracker](/DDC25National/bugAdmin.png)
 
 On the admin page we can query the database. By just querying anything and going to the proxy/network history we can see a call like ``/admin_search?query=``.
 In order to get the flag we can perform NoSQL injection here and extract the flag using the following payload:
 ``[{"$unionWith": "flags"}]`` that we then need to URL encode to ``/admin_search?query=%5B%7B%22%24unionWith%22%3A%20%22flags%22%7D%5D``
 
 And this gets us the flag: ``DDC{c0nfu53d_4nd_vuln3r4bl3}``
-![Flag for bug tracker](/src/assets/DDC25National/bugFlag.png)
+![Flag for bug tracker](/DDC25National/bugFlag.png)
 
 
 
@@ -595,7 +595,7 @@ And this gets us the flag: ``DDC{c0nfu53d_4nd_vuln3r4bl3}``
 TODO WRITE PROPERLY
 
 After logging in with a user that we have registered:
-![EvilPlot Parking Group homepage](/src/assets/DDC25National/parkingHome.png)
+![EvilPlot Parking Group homepage](/DDC25National/parkingHome.png)
 
 <http://evilplot.hkn/create-parking?user=asd@asd.asd&pId=7&auth=b741531720738198c9aecea0805d4af917cb88741743503c3c25eaab10ace2d3>
 
@@ -652,7 +652,7 @@ b7e51bbb14c0b38ae395026a11e5cc515574c6363ff59a29bd6acc051a413e6e
 We can then modify the URL to login as Bente:
 <http://evilplot.hkn/create-parking?user=bente@mail.dk&pId=6&auth=b7e51bbb14c0b38ae395026a11e5cc515574c6363ff59a29bd6acc051a413e6e>
 
-![EvilPlot Parking Group after logging in as Bente](/src/assets/DDC25National/parkingBente.png)
+![EvilPlot Parking Group after logging in as Bente](/DDC25National/parkingBente.png)
 
 By then clicking the create parking button, we get the flag in a toast message:
 
@@ -663,7 +663,7 @@ By then clicking the create parking button, we get the flag in a toast message:
 > Jeg har lavet en mega fed legende generator, gå da lige ind og check den ud og få din helt egen custom legende!!.
 TODO WRITE PROPERLY
 
-![Homepage of The Legend](/src/assets/DDC25National/legendHome.png)
+![Homepage of The Legend](/DDC25National/legendHome.png)
 
 By inputting anything and then running exiftool on the PDF we get: ``Creator: wkhtmltopdf 0.12.6``.
 
@@ -853,7 +853,7 @@ After that we can simply cat the flag: ``cat /home/admin/flag.txt`` and we get o
 By quickly running ``nmap`` we discover that there is a port ``8080`` is open.
 
 Here we can see that we can execute a bash command of our choice.
-![Kattekilling homepage](/src/assets/DDC25National/kattekilling.png)
+![Kattekilling homepage](/DDC25National/kattekilling.png)
 
 By running a couple of commands it turns out there is a blacklist blocking certain commands. To avoid this we can spawn a reverse shell using ``Perl``:
 ```bash
@@ -870,7 +870,7 @@ By opening ``/root/flag.txt`` we get our flag:
 > DET ER NATIONALS OG DET ER TID TIL AT KOMME 100% OP I GEAR MIN VEN, FANG MIG PÅ op-i-gear.hkn
 
 By navigating to the web server, we are able to choose different "gears" that display a different page depending on which gear you have chosen.
-![Op i Gear homepage](/src/assets/DDC25National/opigear.png)
+![Op i Gear homepage](/DDC25National/opigear.png)
 
 If we look in the given source we can find the relevant function:
 ```php
