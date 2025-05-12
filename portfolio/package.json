@@ -24,10 +24,17 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.6",
-    "vite": "^6.3.5",
-    "rollup": "^3.29.4"
+    "vite": "^6.3.5"
   },
   "devDependencies": {
     "@vitejs/plugin-basic-ssl": "^2.0.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.40.2"
+  },
+  "overrides": {
+    "vite": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
   }
 }
