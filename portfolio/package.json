@@ -28,5 +28,8 @@
   },
   "devDependencies": {
     "@vitejs/plugin-basic-ssl": "^2.0.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.40.2"
   }
 }
