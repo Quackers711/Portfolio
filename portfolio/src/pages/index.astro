@@ -12,37 +12,39 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	</head>
 	<body>
 		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+		<main class="prose mx-auto px-4 py-10">
+		<h1 class="text-4xl font-bold">🚧 Under Construction</h1>
+
+		<p>
+			Welcome! This blog is currently under construction, but it will soon serve as a home for detailed
+			<strong>CTF writeups</strong>, <strong>cybersecurity experiments</strong>, and notes on interesting
+			technical challenges in the security world.
+		</p>
+
+		<p>
+			Whether you're a seasoned hacker or just getting started, the goal is to provide clear, structured,
+			and insightful posts about real-world problems, techniques, and tools that pop up in the CTF and infosec space.
+		</p>
+
+		<h2 class="text-2xl font-semibold mt-8">🛠 Custom Features (So Far)</h2>
+		<ul>
+			<li>🔒 <strong>Post locking system</strong> — password-protected posts using Astro API routes and cookies</li>
+			<li>🎨 <strong>Tailwind-powered UI</strong> — clean, minimal styles with responsive design</li>
+			<li>📁 <strong>Markdown-based content</strong> — all posts managed through content collections</li>
+			<li>🌙 <strong>Dark mode (planned)</strong> — easy on the eyes for those late-night hacking sessions</li>
+			<li>🔍 <strong>Search and tag filters (planned)</strong> — find writeups by topic, tag, or event</li>
+			<li>🚩 <strong>CTF challenge templates (planned)</strong> — reusable layout for reverse, pwn, web, etc.</li>
+		</ul>
+
+		<h2 class="text-2xl font-semibold mt-8">🧭 Roadmap</h2>
+		<ol class="list-decimal list-inside">
+			<li>Finish basic blog layout and polish navigation</li>
+			<li>Add author pages and tag filtering</li>
+			<li>Integrate dark mode toggle</li>
+			<li>Implement code highlighting and copy buttons for snippets</li>
+			<li>Deploy password protection for select posts (done ✅)</li>
+			<li>Start publishing CTF writeups regularly</li>
+		</ol>
 		</main>
 		<Footer />
 	</body>
