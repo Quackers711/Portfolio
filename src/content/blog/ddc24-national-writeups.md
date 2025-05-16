@@ -2,7 +2,7 @@
 title: 'DDC24 - National Writeups'
 description: 'Writeups of all challenges I solved during nationals of DDC24'
 pubDate: 'May 5 2024'
-heroImage: '/blog-placeholder-4.jpg'
+heroImage: '/DDC_National24.png'
 tags: ['CTF', 'DDC', 'Web', 'Forensics', 'B2R', 'Misc', 'Crypto', 'Rev']
 ---
 
