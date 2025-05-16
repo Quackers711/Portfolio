@@ -1,18 +1,15 @@
 # Portfolio
+This is the repository for my personal developer portfolio. It showcases selected projects, blog posts, and custom-built features using modern web technologies.
 
-TODO:
-- Make tags clickable and have a search result thing with it.
-- Custom styling
-- Blogpost images
-- Newsletter? (Email on post)
-- Integrate StoryBlok? (Maybe not)
-- Locked icon on blog "index" on locked posts
-- Table of contents
-
+## In progress
+- Make tags clickable and implement search functionality.
+- Custom styling.
+- Blogpost images.
+- Possibility to sign up for newsletter (Email on post).
+- Locked icon on blog "index" on locked posts.
+- Table of contents.
 
 ## Custom implementation:
+- Ability to lock blogs behind password authentication.
 - Blogpost tags/categories.
-- Table of contents
-
-## TODO TOMORROW
-- Fix global.css not being imported properly
+- Table of contents.
