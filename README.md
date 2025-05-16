@@ -1,6 +1,8 @@
 # Portfolio
 This is the repository for my personal developer portfolio. It showcases selected projects, blog posts, and custom-built features using modern web technologies.
 
+This project builds upon the Astro Starter Kit Blog with custom functionality, components and styling.
+
 ## In progress
 - Make tags clickable and implement search functionality.
 - Custom styling.
