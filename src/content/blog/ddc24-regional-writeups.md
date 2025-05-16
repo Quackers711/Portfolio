@@ -2,7 +2,7 @@
 title: 'DDC24 - Regional Writeups'
 description: 'Writeups of all challenges I solved during regionals of DDC24'
 pubDate: 'Apr 14 2024'
-heroImage: '/blog-placeholder-3.jpg'
+heroImage: '/DDC_Regional24.png'
 tags: ['CTF', 'DDC', 'Web', 'Forensics', 'Rev', 'B2R', 'Misc', 'Crypto', 'Unintended']
 ---
 
